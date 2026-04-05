@@ -1,0 +1,21 @@
+{
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/main.ts",
+    "dev": "ts-node-dev --watch \"src/**/*\" --respawn --transpile-only src/main.ts ",
+    "prod": "node dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "colyseus": "^0.17.8",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@colyseus/monitor": "^0.17.8",
+    "@colyseus/playground": "^0.17.12",
+    "@colyseus/tools": "^0.17.19",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
