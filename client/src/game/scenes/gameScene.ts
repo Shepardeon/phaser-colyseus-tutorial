@@ -43,8 +43,8 @@ export class GameScene extends Scene {
       this.playerEntities[sessionId as string] = entity;
 
       callbacks.onChange(player, () => {
-        entity.x = player.x;
-        entity.y = player.y;
+        entity.setData("serverX", player.x);
+        entity.setData("serverY", player.y);
       });
     });
 
@@ -65,6 +65,14 @@ export class GameScene extends Scene {
     this.inputPayload.up = this.cursorKey?.up.isDown || false;
     this.inputPayload.down = this.cursorKey?.down.isDown || false;
     this.room.send("input", this.inputPayload);
+
+    for (let sessionId in this.playerEntities) {
+      const entity = this.playerEntities[sessionId];
+      const { serverX, serverY } = entity.data.values;
+
+      entity.x = Phaser.Math.Linear(entity.x, serverX, 0.2);
+      entity.y = Phaser.Math.Linear(entity.y, serverY, 0.2);
+    }
   }
 
   private async connect() {
