@@ -21,6 +21,9 @@ export class GameScene extends Scene {
   currentPlayer: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   remoteRef: Phaser.GameObjects.Rectangle;
 
+  elapsedTime = 0;
+  fixedTimeStep = 1000 / 60;
+
   constructor() {
     super("GameScene");
     this.client = new Client(`${location.protocol}//${location.hostname}:2567`);
@@ -75,9 +78,7 @@ export class GameScene extends Scene {
     });
   }
 
-  update(time: number, delta: number): void {
-    if (!this.room || !this.currentPlayer) return;
-
+  private _fixedTick(time: number, delta: number) {
     this.inputPayload.left = this.cursorKey?.left.isDown || false;
     this.inputPayload.right = this.cursorKey?.right.isDown || false;
     this.inputPayload.up = this.cursorKey?.up.isDown || false;
@@ -106,6 +107,16 @@ export class GameScene extends Scene {
 
       entity.x = Phaser.Math.Linear(entity.x, serverX, 0.2);
       entity.y = Phaser.Math.Linear(entity.y, serverY, 0.2);
+    }
+  }
+
+  update(time: number, delta: number): void {
+    if (!this.room || !this.currentPlayer) return;
+
+    this.elapsedTime += delta;
+    while (this.elapsedTime >= this.fixedTimeStep) {
+      this.elapsedTime -= this.fixedTimeStep;
+      this._fixedTick(time, this.fixedTimeStep);
     }
   }
 
